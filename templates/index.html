@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blockchain Stamp Collection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+        }
+        .form-group input {
+            padding: 8px;
+            width: 300px;
+        }
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .chain {
+            margin-top: 30px;
+            width: 80%;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Blockchain - Kolekcja znaczków</h1>
+        <div class="form-group">
+            <label for="owner">Właściciel</label>
+            <input type="text" id="owner">
+        </div>
+        <div class="form-group">
+            <label for="stamp">Znaczek</label>
+            <input type="text" id="stamp">
+        </div>
+        <div class="form-group">
+            <label for="year">Rok</label>
+            <input type="text" id="year">
+        </div>
+        <button onclick="createTransaction()">Stwórz transakcję</button>
+        <button onclick="mineBlock()">Wykop blok</button>
+        <button onclick="getChain()">Pobierz Blockchain</button>
+        <div class="chain">
+            <h2>Blockchain</h2>
+            <pre id="chainData"></pre>
+        </div>
+    </div>
+    <script>
+        async function createTransaction() {
+            const owner = document.getElementById('owner').value;
+            const stamp = document.getElementById('stamp').value;
+            const year = document.getElementById('year').value;
+            const response = await fetch('/transactions/new', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ owner, stamp, year })
+            });
+            const data = await response.json();
+            alert(data.message);
+        }
+
+        async function mineBlock() {
+            const response = await fetch('/mine');
+            const data = await response.json();
+            alert(data.message);
+            getChain();
+        }
+
+        async function getChain() {
+            const response = await fetch('/chain');
+            const data = await response.json();
+            document.getElementById('chainData').textContent = JSON.stringify(data, null, 4);
+        }
+    </script>
+</body>
+</html>
